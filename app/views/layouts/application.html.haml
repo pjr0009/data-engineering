@@ -1,0 +1,28 @@
+!!! 5
+%html{:lang => "en"}
+  %head
+    %title Boilerplate
+    = stylesheet_link_tag    "application", :media => "all"
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+    
+%body
+
+  .container
+    %header
+      .navbar
+        .navbar-inner
+          = link_to "Boilerplate", root_url, :title => "Dashboard", :class => "brand"
+          %ul.nav.pull-right
+            %li.dropdown
+              = link_to "#", :title => "Account", :class => "dropdown-toggle", :'data-toggle' => "dropdown" do
+                Account
+                %b.caret
+              %ul.dropdown-menu
+                %li= link_to "Sign Out", destroy_user_session_path, :title => "Sign Out", :method => 'delete'
+    
+      = render :partial => 'layouts/flashes'
+    
+    = render :partial => 'layouts/breadcrumb'
+
+    = yield

@@ -1,0 +1,20 @@
+- if notice || alert
+  - if notice
+    .alert.alert-info
+      %button{:type => "button", :class => "close", :'data-dismiss' => "alert"} &times;
+      = notice
+  - if alert
+    .alert.alert-block
+      %button{:type => "button", :class => "close", :'data-dismiss' => "alert"} &times;
+      = alert
+  
+  -# We have to wait for Rails4 to use these
+  
+  -# - if error
+  -#   .alert.alert-error
+  -#     %button{:type => "button", :class => "close", :'data-dismiss' => "alert"} &times;
+  -#     = error
+  -# - if success
+  -#   .alert.alert-success
+  -#     %button{:type => "button", :class => "close", :'data-dismiss' => "alert"} &times;
+  -#     = success

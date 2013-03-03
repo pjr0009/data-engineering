@@ -1,0 +1,13 @@
+= form_for resource, :as => resource_name, :url => unlock_path(resource_name), :html => { :method => :post } do |f|
+
+  %fieldset
+    %legend Resend unlock instructions
+    
+    = devise_error_messages!
+
+    = f.label :email
+    = f.email_field :email, :autofocus => true
+
+    %button.btn{:type => "submit"} Resend unlock instructions
+
+= render "devise/shared/links"

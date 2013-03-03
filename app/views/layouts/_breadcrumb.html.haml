@@ -1,0 +1,7 @@
+%ul.breadcrumb
+  - breadcrumbs.each do |breadcrumb|
+    %li
+      = link_to breadcrumb[:title], breadcrumb[:url], :title => breadcrumb[:title]
+      %span.divider /
+  %li.active
+    = yield :title
