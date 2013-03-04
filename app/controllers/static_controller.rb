@@ -4,6 +4,7 @@ class StaticController < ApplicationController
   
   def index
     redirect_to dashboard_path if current_user
+    render :layout => 'landing'
   end
   
 end

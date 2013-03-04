@@ -1,13 +1,14 @@
-= form_for resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post } do |f|
+.row-fluid
+  .devise.well.span4.offset4
+    = form_for resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post } do |f|
   
-  %fieldset
-    %legend Forgot your password?
+      %fieldset
+        %legend Forgot your password?
     
-    = devise_error_messages!
+        = devise_error_messages!
 
-    = f.label :email
-    = f.email_field :email, :autofocus => true
+        = f.email_field :email, :autofocus => true, :placeholder => "Email address"
 
-    %button{:type => "submit"} Send me reset password instructions
+        %button.btn{:type => "submit"} Send me reset password instructions
 
-= render "devise/shared/links"
+    = render "devise/shared/links"
