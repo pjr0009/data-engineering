@@ -1,0 +1,12 @@
+%ul.nav.nav-tabs
+  %li.active
+    = link_to "Upload", upload_path, :title => "Uploader"
+  %li
+    = link_to "My Reports", reports_path, :title => "Uploader"
+
+
+.tab-content
+  .tab-pane.active
+    = form_tag process_report_path, :multipart => true do
+      = file_field_tag "attachment"
+      = submit_tag "Submit", :class => "btn btn-primary", :data => { :disable_with => "Processing..." }

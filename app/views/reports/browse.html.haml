@@ -1,0 +1,42 @@
+%ul.nav.nav-tabs
+  %li
+    = link_to "Upload", upload_path, :title => "Uploader"
+  %li.active
+    = link_to "My Reports", reports_path, :title => "Uploader"
+
+
+.tab-content
+  .tab-pane.active
+    %table.table.table-hover
+      %tr
+        %th
+          ID
+        %th
+          Name
+        %th
+          Total
+        %th
+          Uploaded
+      - @reports.each do |report|
+        %tr
+          %td
+            = report.id 
+          %td
+            = report.name
+          %td
+            = report.total
+          %td
+            = report.created_at
+      / %tr
+      /   %th
+      /     Purchaser Name
+      /   %th
+      /     Item Description 
+      /   %th
+      /     Item Price
+      /   %th
+      /     Purchase Count
+      /   %th
+      /     Merchant Address
+      /   %th
+      /     Merchant Name

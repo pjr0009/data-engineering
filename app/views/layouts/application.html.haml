@@ -1,7 +1,7 @@
 !!! 5
 %html{:lang => "en"}
   %head
-    %title Boilerplate
+    %title LS Uploader
     = stylesheet_link_tag    "application", :media => "all"
     = javascript_include_tag "application"
     = csrf_meta_tags
@@ -12,7 +12,7 @@
     %header
       .navbar
         .navbar-inner
-          = link_to "Boilerplate", root_url, :title => "Dashboard", :class => "brand"
+          = link_to "LivingSocial upload service", root_url, :title => "Living Social Uploader", :class => "brand"
           %ul.nav.pull-right
             %li.dropdown
               = link_to "#", :title => "Account", :class => "dropdown-toggle", :'data-toggle' => "dropdown" do
@@ -23,7 +23,6 @@
     
       = render :partial => 'layouts/flashes'
     
-    = render :partial => 'layouts/breadcrumb'
 
     = yield
     

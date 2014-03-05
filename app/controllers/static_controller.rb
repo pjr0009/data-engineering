@@ -7,9 +7,7 @@ class StaticController < ApplicationController
   end
 
   def current_u
-  	if current_user
-  		redirect_to dashboard_path
-  	end
+		redirect_to upload_path if current_user
   end
   
 end
