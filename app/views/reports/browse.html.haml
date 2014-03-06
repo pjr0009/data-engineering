@@ -20,14 +20,14 @@
       - @reports.each do |report|
         %tr
           %td
-            %a{href: "/details/#{report.id}"}
-              = report.id 
+            = report.id 
           %td
-            = report.name
+            %a{href: "/details/#{report.id}", :title => "View Details for #{report.name}"}
+              = report.name
           %td
-            = report.total
+            = number_to_currency(report.total, :unit => "$")
           %td
-            = report.created_at
+            = report.created_at.strftime("%m/%d/%Y")
       / %tr
       /   %th
       /     Purchaser Name

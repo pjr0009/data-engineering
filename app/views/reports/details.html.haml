@@ -19,7 +19,7 @@
       %td
         = entry.item_description
       %td
-        = entry.item_price
+        = number_to_currency(entry.item_price, :unit => "$")
       %td
         = entry.purchase_count
       %td

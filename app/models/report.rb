@@ -6,8 +6,9 @@ class Report < ActiveRecord::Base
   attr_accessible :total, :name
 
 
-  # we will use ruby's csv class because it's fast, safe, and much more extensible
-  # than creating my own parsing algorithm. 
+  # Ruby's CSV class will be used because it's fast, safe, extensible,
+  # and it has great documentation. A much better solution than 
+  # implementing my own parsing algorithm from scratch
   # see: http://ruby-doc.org/stdlib-1.9.2/libdoc/csv/rdoc/CSV.html
 
   
@@ -31,6 +32,7 @@ class Report < ActiveRecord::Base
       CSV.foreach(attachment.path, {:col_sep => "\t", :headers => true, :header_converters => :symbol}) do |e|
         e = Entry.new(e.to_hash)
         e.report_id = self.id
+        e.aggregate_total = e.item_price * e.purchase_count
         entries << e
       end
       #bulk insert of values
@@ -39,9 +41,7 @@ class Report < ActiveRecord::Base
 
     # calculate the total for all row entries
     def calculate_total
-      total = self.entries.pluck(:item_price).reduce(:+)
-      puts "\n\n\n\n\n\n\n\n\n\n\n\ " 
-      puts total
+      total = self.entries.pluck(:aggregate_total).reduce(:+)
       self.update_attribute("total", total)
     end
 

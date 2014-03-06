@@ -7,6 +7,11 @@
 
 .tab-content
   .tab-pane.active
+    %h2
+      Upload a new report
+    %h5
+      %small
+        Attach a tab-seperated file to begin processing. 
     = form_tag process_report_path, :multipart => true do
-      = file_field_tag "attachment"
-      = submit_tag "Submit", :class => "btn btn-primary", :data => { :disable_with => "Processing..." }
+      = file_field_tag "attachment", :required => true
+      = submit_tag "Submit", :class => "submit-button btn btn-primary", :data => { :disable_with => "Processing..." }
