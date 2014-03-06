@@ -2,13 +2,11 @@ development:
   adapter: postgresql
   encoding: UTF8
   database: livingSocial_development
-  username: phillip
   password: password
   host: localhost
 production:
   adapter: postgresql
   encoding: UTF8
   database: livingSocial_production
-  username: phillip
-  password: password
+  password: 
   host: localhost
