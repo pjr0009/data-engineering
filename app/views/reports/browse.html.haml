@@ -20,7 +20,8 @@
       - @reports.each do |report|
         %tr
           %td
-            = report.id 
+            %a{href: "/details/#{report.id}"}
+              = report.id 
           %td
             = report.name
           %td

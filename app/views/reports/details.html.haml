@@ -1,0 +1,28 @@
+%table.table.table-hover
+  %tr
+    %th
+      Purchaser Name
+    %th
+      Item Description 
+    %th
+      Item Price
+    %th
+      Purchase Count
+    %th
+      Merchant Address
+    %th
+      Merchant Name
+  - @entries.each do |entry|
+    %tr
+      %td
+        = entry.purchaser_name
+      %td
+        = entry.item_description
+      %td
+        = entry.item_price
+      %td
+        = entry.purchase_count
+      %td
+        = entry.merchant_address
+      %td
+        = entry.merchant_name || "N/A"

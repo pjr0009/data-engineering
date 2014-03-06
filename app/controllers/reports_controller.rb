@@ -26,9 +26,13 @@ class ReportsController < ApplicationController
 
   end
 
-
   def browse
     @reports = current_user.reports.order('created_at DESC')
+  end
+
+  def details
+    report = current_user.reports.where(:id => params[:id]).first
+    @entries = report ? report.entries : []
   end
   
 end
