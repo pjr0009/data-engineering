@@ -30,14 +30,14 @@ class Report < ActiveRecord::Base
       # iterate over each row
       entries = []
       total = 0
-      SmarterCSV.process(attachment.path, {:col_sep => "\t", :has_headers => true, :chunk_size => 2500}) do |chunk|
-        $redis.multi do
+      SmarterCSV.process(attachment.path, {:col_sep => "\t", :has_headers => true, :chunk_size => 5000}) do |chunk|
+        REDIS.multi do
           i = 0
           chunk.each do |e|
             e[:report_id] = self.id
             e[:aggregate_total] = e[:item_price].to_f * e[:purchase_count].to_f
             total += e[:aggregate_total]
-            $redis.set "#{e[:report_id]}:#{i}", e.to_json
+            REDIS.set "#{e[:report_id]}:#{i}", e.to_json
             i+=1
           end
         end
