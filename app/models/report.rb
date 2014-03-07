@@ -36,6 +36,7 @@ class Report < ActiveRecord::Base
           e = e.to_hash
           e[:report_id] = self.id
           REDIS.set "#{e[:report_id]}:#{i}", e.to_json
+          REDIS.expire "#{e[:report_id]}:#{i}", 25
           e[:aggregate_total] = e[:item_price].to_f * e[:purchase_count].to_f
           total += e[:aggregate_total]
           i+=1
@@ -44,7 +45,6 @@ class Report < ActiveRecord::Base
         #bulk insert of values into redis, to be processes later
         #using .multi so that the records are atomically pipelined into redis
       self.update_attribute("total", total)
-
     end
 
     def process_report_entries
