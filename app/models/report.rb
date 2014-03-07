@@ -36,7 +36,7 @@ class Report < ActiveRecord::Base
           e = e.to_hash
           e[:report_id] = self.id
           REDIS.set "#{e[:report_id]}:#{i}", e.to_json
-          REDIS.expire "#{e[:report_id]}:#{i}", 25
+          REDIS.expire "#{e[:report_id]}:#{i}", 300
           e[:aggregate_total] = e[:item_price].to_f * e[:purchase_count].to_f
           total += e[:aggregate_total]
           i+=1
