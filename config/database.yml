@@ -2,7 +2,11 @@ development:
   adapter: postgresql
   encoding: UTF8
   database: livingSocial_development
-  password: password
+  host: localhost
+test:
+  adapter: postgresql
+  encoding: UTF8
+  database: livingSocial_testing
   host: localhost
 production:
   adapter: postgresql

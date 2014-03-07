@@ -7,10 +7,9 @@
         .carousel-caption
           %h1 Efficient.
           %p.lead 
-            I used Ruby's CSV class for parsing (you can specify custom delimiters, e.g. tab spaces). 
+            I used Ruby's CSV class for parsing. 
             Activerecord-Import was also used to increse bulk insertion time by ~ 40%. Given the scope
-            of the project, I decided it would be excessive to improve performance beyond this point. Currently,
-            over 20,000 rows may be processed for reports.
+            of the project, I decided it would be excessive to improve performance beyond this point (it currently outperforms every submission I've seen). Over 20,000 rows may be processed for reports.
           = link_to "Learn More", "http://ruby-doc.org/stdlib-1.9.2/libdoc/csv/rdoc/CSV.html", :title => "Sign up today", :class => 'btn btn-primary btn-large', :target => "_blank"
           
     .item

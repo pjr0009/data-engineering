@@ -1,9 +1,11 @@
-require 'csv'
+require 'smarter_csv'
+require 'redis'
 
 class Report < ActiveRecord::Base
   belongs_to :user
   has_many :entries
   attr_accessible :total, :name
+  accepts_nested_attributes_for :entries
 
 
   # Ruby's CSV class will be used because it's fast, safe, extensible,
@@ -14,38 +16,57 @@ class Report < ActiveRecord::Base
   
   def process_attachment(attachment)
     #first, parse entries
-    parse_and_store_entries(attachment)
-    #next, calculate and save total
-    calculate_total()
+    queue_entries_and_store_total(attachment)
+    #next, start job to normalize data
+    process_report_entries
+
   end
 
-  # parses the attachement and stores each row as an entry of the report
-  # parse_and_store_entries could be used to calculate and return the total
-  # but for orginization, error handling, and maintainability purposes, 
-  # I will seperate it into it's own step. 
 
   private 
 
-    def parse_and_store_entries(attachment)
+    def queue_entries_and_store_total(attachment)
+      # connect to redis
       # iterate over each row
       entries = []
-      CSV.foreach(attachment.path, {:col_sep => "\t", :headers => true, :header_converters => :symbol}) do |e|
-        e = Entry.new(e.to_hash)
-        e.report_id = self.id
-        e.aggregate_total = e.item_price * e.purchase_count
-        entries << e
+      total = 0
+      SmarterCSV.process(attachment.path, {:col_sep => "\t", :has_headers => true, :chunk_size => 2500}) do |chunk|
+        $redis.multi do
+          i = 0
+          chunk.each do |e|
+            e[:report_id] = self.id
+            e[:aggregate_total] = e[:item_price].to_f * e[:purchase_count].to_f
+            total += e[:aggregate_total]
+            $redis.set "#{e[:report_id]}:#{i}", e.to_json
+            i+=1
+          end
+        end
+        #bulk insert of values into redis, to be processes later
+        #using .multi so that the records are atomically pipelined into redis
       end
-      #bulk insert of values
-      Entry.import entries
-    end
-
-    # calculate the total for all row entries
-    def calculate_total
-      total = self.entries.pluck(:aggregate_total).reduce(:+)
       self.update_attribute("total", total)
+
     end
 
+    def process_report_entries
+      keys = $redis.keys "#{self.id}:*" 
+      entries = $redis.multi do
+        keys.each do |key|
+          $redis.get(key)
+        end
+      end
 
+      entries = entries.map{|entry| Entry.new(JSON.parse(entry))}
+      #import
+      Entry.import entries
+      #clean redis
+      $redis.multi do
+        keys.each do |key|
+          $redis.expire key
+        end
+      end
+    end
+    handle_asynchronously :process_report_entries
 
   
 
