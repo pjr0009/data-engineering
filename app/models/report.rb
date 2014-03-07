@@ -1,4 +1,4 @@
-require 'smarter_csv'
+require 'csv'
 require 'redis'
 
 class Report < ActiveRecord::Base
@@ -30,29 +30,28 @@ class Report < ActiveRecord::Base
       # iterate over each row
       entries = []
       total = 0
-      SmarterCSV.process(attachment.path, {:col_sep => "\t", :has_headers => true, :chunk_size => 5000}) do |chunk|
-        REDIS.multi do
-          i = 0
-          chunk.each do |e|
-            e[:report_id] = self.id
-            e[:aggregate_total] = e[:item_price].to_f * e[:purchase_count].to_f
-            total += e[:aggregate_total]
-            REDIS.set "#{e[:report_id]}:#{i}", e.to_json
-            i+=1
-          end
+      i = 0
+      REDIS.multi do
+        CSV.foreach(attachment.path, {:col_sep => "\t", :headers => true, :header_converters => :symbol}) do |e|
+          e = e.to_hash
+          e[:report_id] = self.id
+          REDIS.set "#{e[:report_id]}:#{i}", e.to_json
+          e[:aggregate_total] = e[:item_price].to_f * e[:purchase_count].to_f
+          total += e[:aggregate_total]
+          i+=1
         end
+      end
         #bulk insert of values into redis, to be processes later
         #using .multi so that the records are atomically pipelined into redis
-      end
       self.update_attribute("total", total)
 
     end
 
     def process_report_entries
-      keys = $redis.keys "#{self.id}:*" 
-      entries = $redis.multi do
+      keys = REDIS.keys "#{self.id}:*" 
+      entries = REDIS.multi do
         keys.each do |key|
-          $redis.get(key)
+          REDIS.get(key)
         end
       end
 
@@ -60,9 +59,9 @@ class Report < ActiveRecord::Base
       #import
       Entry.import entries
       #clean redis
-      $redis.multi do
+      REDIS.multi do
         keys.each do |key|
-          $redis.expire key
+          REDIS.expire key, 0
         end
       end
     end
