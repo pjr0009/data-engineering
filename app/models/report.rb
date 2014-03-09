@@ -18,16 +18,13 @@ class Report < ActiveRecord::Base
     #first, parse entries
     queue_entries_and_store_total(attachment)
     #next, start job to normalize data
-    process_report_entries
-
+    delay.process_report_entries
   end
 
 
   private 
 
     def queue_entries_and_store_total(attachment)
-      # connect to redis
-      # iterate over each row
       entries = []
       total = 0
       i = 0
@@ -35,15 +32,19 @@ class Report < ActiveRecord::Base
         CSV.foreach(attachment.path, {:col_sep => "\t", :headers => true, :header_converters => :symbol}) do |e|
           e = e.to_hash
           e[:report_id] = self.id
-          REDIS.set "#{e[:report_id]}:#{i}", e.to_json
-          REDIS.expire "#{e[:report_id]}:#{i}", 300
           e[:aggregate_total] = e[:item_price].to_f * e[:purchase_count].to_f
+          REDIS.set "#{e[:report_id]}:#{i}", e.to_json
+          
+          # the following expiration statement wouldn't be here in a production app. 
+          # it's just a cleanup to prevent me from upgrading my redis instance size on heroku.
+          # it would be very dangerous and unwise to set key expirations before the delayed job completed 
+          # in a production scale app with customer data.
+          REDIS.expire "#{e[:report_id]}:#{i}", 300
+          
           total += e[:aggregate_total]
           i+=1
         end
       end
-        #bulk insert of values into redis, to be processes later
-        #using .multi so that the records are atomically pipelined into redis
       self.update_attribute("total", total)
     end
 
@@ -54,18 +55,20 @@ class Report < ActiveRecord::Base
           REDIS.get(key)
         end
       end
-
       entries = entries.map{|entry| Entry.new(JSON.parse(entry))}
       #import
       Entry.import entries
-      #clean redis
+      expire_redis_entries
+    end
+
+    def expire_redis_entries
+      keys = REDIS.keys "#{self.id}:*"
       REDIS.multi do
         keys.each do |key|
           REDIS.expire key, 0
         end
       end
     end
-    handle_asynchronously :process_report_entries
 
   
 

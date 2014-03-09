@@ -23,6 +23,7 @@ Boilerplate::Application.configure do
 
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 
+  #use localhost for redis client in development env
   ENV["REDISTOGO_URL"] = 'redis://@localhost:6379'
 
 end
