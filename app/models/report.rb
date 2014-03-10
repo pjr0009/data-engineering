@@ -28,7 +28,7 @@ class Report < ActiveRecord::Base
       total = 0
       i = 0
       REDIS.multi do
-        CSV.foreach(attachment.path, {:col_sep => "\t", :headers => true, :header_converters => :symbol}) do |e|
+        CSV.foreach(attachment.path, {:col_sep => "\t", :headers => true, :header_converters => :symbol, :skip_blanks => true}) do |e|
           e = e.to_hash
           e[:report_id] = self.id
           e[:aggregate_total] = e[:item_price].to_f * e[:purchase_count].to_f
@@ -54,15 +54,16 @@ class Report < ActiveRecord::Base
           REDIS.get(key)
         end
       end
-      entries = entries.map{|entry| Entry.new(JSON.parse(entry))}
-      #import
+      entries = entries.map{|entry| JSON.parse(entry)}
+      
+      # normalize data into postgres
       entries.each do |entry|
         e = Entry.create!(:report_id => self.id, :purchase_count => entry.purchase_count)
         e.merchant = Merchant.find_or_create_by(:name => entry.merchant_name) do |m|
           m.address = entry.merchant_address
         end
         
-        puts entry.purchaser_name
+        puts "Importing purchase by: #{entry.purchaser_name}"
         e.customer = Customer.find_or_create_by(:name => entry.purchaser_name) do |c|
           c.merchant = e.merchant
         end
