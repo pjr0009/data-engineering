@@ -17,7 +17,7 @@ class Report < ActiveRecord::Base
     #first, parse entries
     queue_entries_and_store_total(attachment)
     #next, start job to normalize data
-    delay.process_report_entries
+    process_report_entries
   end
 
 
