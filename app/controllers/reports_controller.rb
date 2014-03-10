@@ -31,7 +31,7 @@ class ReportsController < ApplicationController
   end
 
   def details
-    report = current_user.reports.where(:id => params[:id]).first
+    report = current_user.reports.includes(:entries, :entries => :deal, :entries => :customer, :entries => :merchant).where(:id => params[:id]).first
     @entries = report ? report.entries : []
   end
   

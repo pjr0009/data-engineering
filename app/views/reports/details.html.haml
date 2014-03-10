@@ -1,28 +1,33 @@
-%table.table.table-hover
-  %tr
-    %th
-      Purchaser Name
-    %th
-      Item Description 
-    %th
-      Item Price
-    %th
-      Purchase Count
-    %th
-      Merchant Address
-    %th
-      Merchant Name
-  - @entries.each do |entry|
+-if @entries.length > 0
+  %table.table.table-hover
     %tr
-      %td
-        = entry.customer.name
-      %td
-        = entry.deal.item_description
-      %td
-        = number_to_currency(entry.deal.item_price, :unit => "$")
-      %td
-        = entry.purchase_count
-      %td
-        = entry.merchant.address
-      %td
-        = entry.merchant.name || "N/A"
+      %th
+        Purchaser Name
+      %th
+        Item Description 
+      %th
+        Item Price
+      %th
+        Purchase Count
+      %th
+        Merchant Address
+      %th
+        Merchant Name
+
+    - @entries.each do |entry|
+      %tr
+        %td
+          = entry.customer.name
+        %td
+          = entry.deal.item_description
+        %td
+          = number_to_currency(entry.deal.item_price, :unit => "$")
+        %td
+          = entry.purchase_count
+        %td
+          = entry.merchant.address
+        %td
+          = entry.merchant.name || "N/A"
+- else
+  %strong.muted
+    The details of your report are still processing, please check back in a few minutes...
