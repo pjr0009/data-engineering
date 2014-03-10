@@ -2,6 +2,13 @@
 
 Prerequisites:  Ruby version >= 1.9.3, Rails 4.
 
+#Setup
+
+on heroku:
+
+I deployed it to heroku @ http://www.salty-island-7589.herokuapp.com it should be fully functional
+
+locally:
 
 1) clone repo
 
