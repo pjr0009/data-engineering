@@ -15,14 +15,14 @@
   - @entries.each do |entry|
     %tr
       %td
-        = entry.purchaser_name
+        = entry.customer.name
       %td
-        = entry.item_description
+        = entry.deal.item_description
       %td
-        = number_to_currency(entry.item_price, :unit => "$")
+        = number_to_currency(entry.deal.item_price, :unit => "$")
       %td
         = entry.purchase_count
       %td
-        = entry.merchant_address
+        = entry.merchant.address
       %td
-        = entry.merchant_name || "N/A"
+        = entry.merchant.name || "N/A"

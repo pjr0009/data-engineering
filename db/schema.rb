@@ -11,10 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140306205906) do
+ActiveRecord::Schema.define(version: 20140309233836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "customers", force: true do |t|
+    t.integer  "merchant_id"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deals", force: true do |t|
+    t.integer  "merchant_id"
+    t.string   "item_description"
+    t.float    "item_price"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "delayed_jobs", force: true do |t|
     t.integer  "priority",   default: 0, null: false
@@ -34,6 +49,9 @@ ActiveRecord::Schema.define(version: 20140306205906) do
 
   create_table "entries", force: true do |t|
     t.integer  "report_id"
+    t.integer  "merchant_id"
+    t.integer  "deal_id"
+    t.integer  "customer_id"
     t.string   "purchaser_name"
     t.string   "item_description"
     t.float    "item_price"
@@ -43,6 +61,14 @@ ActiveRecord::Schema.define(version: 20140306205906) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.float    "aggregate_total"
+  end
+
+  create_table "merchants", force: true do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.string   "address"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "reports", force: true do |t|

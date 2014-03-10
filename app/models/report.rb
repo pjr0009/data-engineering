@@ -1,6 +1,5 @@
 require 'csv'
 require 'redis'
-
 class Report < ActiveRecord::Base
   belongs_to :user
   has_many :entries
@@ -57,7 +56,26 @@ class Report < ActiveRecord::Base
       end
       entries = entries.map{|entry| Entry.new(JSON.parse(entry))}
       #import
-      Entry.import entries
+      entries.each do |entry|
+        e = Entry.create!(:report_id => self.id, :purchase_count => entry.purchase_count)
+        e.merchant = Merchant.find_or_create_by(:name => entry.merchant_name) do |m|
+          m.address = entry.merchant_address
+        end
+        
+        puts entry.purchaser_name
+        e.customer = Customer.find_or_create_by(:name => entry.purchaser_name) do |c|
+          c.merchant = e.merchant
+        end
+
+        e.deal = Deal.find_or_create_by(:item_description => entry.item_description) do |d|
+          d.item_price = entry.item_price
+          d.merchant = e.merchant
+        end
+        
+        e.aggregate_total = entry.aggregate_total
+        e.save
+
+      end
       expire_redis_entries
     end
 
