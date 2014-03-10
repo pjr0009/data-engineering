@@ -4,9 +4,6 @@ Prerequisites:  Ruby version >= 1.9.3, Rails 4.
 
 #Setup
 
-on heroku:
-
-I deployed it to heroku @ http://www.salty-island-7589.herokuapp.com it should be fully functional
 
 locally:
 
@@ -23,6 +20,8 @@ locally:
 6) bundle exec rake db:test:prepare
 
 7) bundle exec rails s
+ 
+8) bundle exec rake jobs:work
 
 
 #About this project
