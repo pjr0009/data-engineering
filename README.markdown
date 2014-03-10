@@ -4,19 +4,25 @@ Prerequisites:  Ruby version >= 1.9.3, Rails 4.
 
 
 1) clone repo
+
 2) install postgres and redis.
+
 3) start up redis: "redis-server"
+
 4) bundle install
+
 5) bundle exec rake db:setup
+
 6) bundle exec rake db:test:prepare
+
 7) bundle exec rails s
 
 
 #About this project
 The project uses Devise for authentication, so you will need to sign up using some email+pw combination in order to upload reports for processing. Once you register, you may upload any valid tab-seperated file for processing. After it is processed you may view uploaded reports, their total values, and also a detailed table of entries for each report.
 
-#performance
-due to queueing with redis and delayed job, the immediate total is available quickly, but the detailed view may take up to 30 seconds to process. I've currently benchmarked the app up 50,000 rows. It could easily exceed that, but I would have to upgrade my postgres and redis instances past the free tier on heroku.
+#Performance
+Due to queueing with redis and delayed job, the immediate total is available quickly. However, the detailed view may take up to 30 seconds to process entirely. I've currently benchmarked the app up 50,000 rows. It could easily exceed that, but I would have to upgrade my postgres and redis instances past the free tier on heroku.
 
 #How processing is done
 - file is uploaded
