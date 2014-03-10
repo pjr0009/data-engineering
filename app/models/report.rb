@@ -54,11 +54,13 @@ class Report < ActiveRecord::Base
           REDIS.get(key)
         end
       end
-      entries = entries.map{|entry| JSON.parse(entry)}
+      entries = entries.map{|entry| Entry.new(JSON.parse(entry))}
       
       # normalize data into postgres
       entries.each do |entry|
-        e = Entry.create!(:report_id => self.id, :purchase_count => entry.purchase_count)
+        e = entry
+        e.report_id = self.id
+        e.purchase_count = entry.purchase_count
         e.merchant = Merchant.find_or_create_by(:name => entry.merchant_name) do |m|
           m.address = entry.merchant_address
         end
