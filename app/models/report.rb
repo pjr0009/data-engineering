@@ -54,28 +54,29 @@ class Report < ActiveRecord::Base
           REDIS.get(key)
         end
       end
-      entries = entries.map{|entry| Entry.new(JSON.parse(entry))}
-      
+
+      entries = entries.map{|entry| JSON.parse(entry)}
       # normalize data into postgres
-      entries.each do |entry|
-        e = entry
-        e.report_id = self.id
-        e.purchase_count = entry.purchase_count
-        e.merchant = Merchant.find_or_create_by(:name => entry.merchant_name) do |m|
-          m.address = entry.merchant_address
+      entries.each do |hashEntry|
+        e = Entry.new(
+            :report_id => self.id,
+            :purchase_count => hashEntry["purchase_count"],
+            :purchaser_name => hashEntry["purchaser_name"],
+            :aggregate_total => hashEntry["aggregate_total"]
+          )
+        e.merchant = Merchant.find_or_create_by(:name => hashEntry["merchant_name"]) do |m|
+          m.address = hashEntry["merchant_address"]
         end
         
-        puts "Importing purchase by: #{entry.purchaser_name}"
-        e.customer = Customer.find_or_create_by(:name => entry.purchaser_name) do |c|
+        puts "Importing purchase by: #{e.purchaser_name}"
+        e.customer = Customer.find_or_create_by(:name => e.purchaser_name) do |c|
           c.merchant = e.merchant
         end
 
-        e.deal = Deal.find_or_create_by(:item_description => entry.item_description) do |d|
-          d.item_price = entry.item_price
+        e.deal = Deal.find_or_create_by(:item_description => hashEntry["item_description"]) do |d|
+          d.item_price = hashEntry["item_price"]
           d.merchant = e.merchant
         end
-        
-        e.aggregate_total = entry.aggregate_total
         e.save
 
       end
