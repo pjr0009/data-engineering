@@ -7,7 +7,7 @@
         .carousel-caption
           %h1 Efficient.
           %p.lead 
-            Ruby's CSV class, redis, delayed-job, and ActiveRecord-import are used to provide extremely fast and efficient bulk imports. Currently with one worker, it can process ~ 50k rows, but scales linearally as more servers are added.
+            Ruby's CSV class, redis, and delayed-job are used to provide extremely fast and efficient bulk imports. Currently with one worker, it can process ~ 50k rows.
           = link_to "Learn More", "http://ruby-doc.org/stdlib-1.9.2/libdoc/csv/rdoc/CSV.html", :title => "Sign up today", :class => 'btn btn-primary btn-large', :target => "_blank"
           
     .item
@@ -38,14 +38,11 @@
     .span4
       %h2 Efficient
       %p  
-        I used Ruby's CSV class for parsing (you can specify custom delimiters, e.g. \t). 
-        Activerecord-Import was also used to increse bulk insertion time by ~ 40%. Given the scope
-        of the project, I decided it would be excessive to improve performance beyond this point. Currently,
-        over 20,000 rows may be processed for reports.
+        Ruby's CSV class, redis, and delayed-job are used to provide extremely fast and efficient bulk imports. Currently with one worker, it can process ~ 50k rows.
 
     .span4
       %h2 Authentication
-      %p Benchmarked to for up to 20,000 row
+      %p Devise was used for a local authentication strategy. Users are required to sign up and log in before uploading any reports. Once registered, you can track, view, and organize all of your .tab reports in one place.
       %p
         %a.btn{:href => "#"} View details »
 
@@ -53,7 +50,7 @@
       %h2 Tested
       %p 
         I wrote unit tests for the models to demonstrate my familiarity with TDD. In a real-world application,
-        the testing suite would include different forms of coverage (e.g. integration and controller tests), well organized mock-data, and javascript tests if a javascript MVC was used. 
+        the testing suite would include different forms of coverage as well (e.g. integration and controller tests), well organized mock-data, and javascript tests if a javascript MVC was used. 
       %p
         %a.btn{:href => "#"} View details »
 
