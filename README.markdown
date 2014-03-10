@@ -28,7 +28,7 @@ locally:
 The project uses Devise for authentication, so you will need to sign up using some email+pw combination in order to upload reports for processing. Once you register, you may upload any valid tab-seperated file for processing. After it is processed you may view uploaded reports, their total values, and also a detailed table of entries for each report.
 
 #Performance
-Due to queueing with redis and delayed job, the immediate total is available quickly. However, the detailed view may take up to 30 seconds to process entirely. I've currently benchmarked the app up 50,000 rows. It could easily exceed that, but I would have to upgrade my postgres and redis instances past the free tier on heroku.
+Due to queueing with redis and delayed job, the immediate total is available quickly. However, the detailed view may take up to 30 seconds to process entirely. I've currently benchmarked the app up to ~ 50,000 rows. Though it could probably easily exceed that in a production environment.
 
 #How processing is done
 - file is uploaded
